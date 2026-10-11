@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createUuid } from "../domain/uuid";
 import { diagonalDimensions } from "../domain/geometry";
 import { validDimension, type MonitorSpec } from "../domain/types";
 import { Modal } from "./Controls";
@@ -84,7 +85,7 @@ export function CustomMonitorEditor({
             return;
           }
           onSave({
-            id: crypto.randomUUID(),
+            id: createUuid(),
             name: name.trim(),
             widthMm: w,
             heightMm: h,

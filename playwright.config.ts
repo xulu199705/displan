@@ -16,6 +16,7 @@ export default defineConfig({
   webServer: {
     command: "npm run dev -- --port 5173 --strictPort",
     url: "http://127.0.0.1:5173",
+    env: { __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: "displan.test" },
     reuseExistingServer: !process.env.CI,
     timeout: 30000,
   },

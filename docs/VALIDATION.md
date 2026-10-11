@@ -56,3 +56,21 @@
 未验证：Safari / Firefox 全套兼容性、大规模对象性能、触摸交互、机械支架安装、实体屏幕尺长校准。工具只提供二维外形几何规划。
 
 界面记录：[桌面截图](screenshots/displan-desktop.png)、[测量截图](screenshots/displan-measurement.png)。
+
+## HTTP UUID 兼容修复回归（2026-10-11）
+
+所有方案、实例与自定义型号 ID 统一使用 `src/domain/uuid.ts`：优先原生 `randomUUID()`，不可用时通过 `getRandomValues()` 生成 16 字节随机数，并设置 UUID v4 的 version / variant 位。保持原有 ID 格式和文档 schema，不增加依赖。
+
+| 检查 | 结果 | 证据范围 |
+| --- | --- | --- |
+| `npm test` | PASS，58 / 58 | 原有 52 项及新增 6 项 UUID 测试；原生 API、接收者绑定、version / variant 位、1000 个回退 UUID 的格式与唯一性、缺失 Web Crypto 的提示 |
+| `npm run build` | PASS | TypeScript 严格类型检查及生产构建 |
+| `npm run test:e2e` | PASS，10 / 10 | 原有 9 项及新增普通 HTTP 回归，Microsoft Edge |
+
+HTTP 测试使用 `http://displan.test:5173/`，浏览器仅将测试域名解析到本地服务器。测试没有修改 Web Crypto，也没有将 HTTP 来源强制视为安全上下文；实际断言 `isSecureContext === false`、`typeof crypto.randomUUID === "undefined"`、`getRandomValues` 可用。
+
+覆盖首次加载 Dell 示例、新建空方案、重复添加、复制、撤销重做、创建自定义型号、命名保存、刷新恢复、自定义仓库恢复、重新加载示例及 JSON 导入。检查生成 ID 的 UUID v4 格式、唯一性和型号引用，并确认全过程无页面脚本异常。
+
+首次构建发现测试引入了项目未配置的 Node 类型声明，已改用运行环境的 Web Crypto，最终构建通过。初轮浏览器回归出现一次既有吸附拖动测试未触发移动；文件编辑结束后完整重跑 10 项全部通过，未修改拖动逻辑或放宽断言。
+
+本次验证支持普通局域网 HTTP 的浏览器兼容性；未在 `192.168.30.141` 安装静态服务器或部署产物。该主机需提供 `dist/` 的 HTTP 静态服务才能通过端口 80 访问。

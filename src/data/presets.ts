@@ -1,4 +1,5 @@
 import type { LayoutDocument, MonitorSpec } from "../domain/types";
+import { createUuid } from "../domain/uuid";
 
 export const presets: MonitorSpec[] = [
   {
@@ -35,7 +36,7 @@ export const presets: MonitorSpec[] = [
 export function blankLayout(): LayoutDocument {
   return {
     schemaVersion: 1,
-    id: crypto.randomUUID(),
+    id: createUuid(),
     name: "未命名方案",
     specs: structuredClone(presets),
     instances: [],
@@ -47,7 +48,7 @@ export function exampleLayout(): LayoutDocument {
     name: "Dell Dual U3425WE + Portrait U3225QE",
     instances: [
       {
-        id: crypto.randomUUID(),
+        id: createUuid(),
         specId: presets[0].id,
         xMm: 420.34 + 813.46 / 2,
         yMm: 359.15 / 2,
@@ -55,7 +56,7 @@ export function exampleLayout(): LayoutDocument {
         locked: false,
       },
       {
-        id: crypto.randomUUID(),
+        id: createUuid(),
         specId: presets[0].id,
         xMm: 420.34 + 813.46 / 2,
         yMm: 359.15 * 1.5,
@@ -63,7 +64,7 @@ export function exampleLayout(): LayoutDocument {
         locked: false,
       },
       {
-        id: crypto.randomUUID(),
+        id: createUuid(),
         specId: presets[1].id,
         xMm: 410.34 / 2,
         yMm: 718.3 / 2,

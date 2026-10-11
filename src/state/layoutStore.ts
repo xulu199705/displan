@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { createUuid } from "../domain/uuid";
 import { blankLayout, exampleLayout } from "../data/presets";
 import {
   validCoordinate,
@@ -63,7 +64,7 @@ export const useLayout = create<LayoutState>((set, get) => ({
   replace: (doc) =>
     set({ doc: structuredClone(doc), past: [], future: [], dragStart: null }),
   add: (spec, x, y) => {
-    const id = crypto.randomUUID();
+    const id = createUuid();
     if (!validCoordinate(x) || !validCoordinate(y)) return "";
     get().edit((d) => {
       if (!d.specs.some((s) => s.id === spec.id))
@@ -134,7 +135,7 @@ export const useLayout = create<LayoutState>((set, get) => ({
       .doc.instances.filter((i) => ids.includes(i.id))
       .map((i) => ({
         ...i,
-        id: crypto.randomUUID(),
+        id: createUuid(),
         locked: false,
         xMm: i.xMm + 20,
         yMm: i.yMm + 20,
