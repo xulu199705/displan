@@ -150,3 +150,7 @@ docs/              验证报告与界面截图
 - 已执行验证见 [验证报告](docs/VALIDATION.md)。当前浏览器自动化覆盖 Chromium 内核的 Microsoft Edge，其他浏览器未逐一验证。
 
 实现参考：[Vite 文档](https://vite.dev/guide/)、[Konva React 拖动](https://konvajs.org/docs/react/Drag_And_Drop.html)、[Konva 指针中心缩放](https://konvajs.org/docs/sandbox/Zooming_Relative_To_Pointer.html)。
+
+## 许可证
+
+本项目采用 [MIT License](LICENSE)。Copyright (c) 2026 Leon Xu。

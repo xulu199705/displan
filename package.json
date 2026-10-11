@@ -2,6 +2,7 @@
   "name": "displan",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "一个基于真实物理尺寸的显示器布局规划工具",
   "scripts": {
