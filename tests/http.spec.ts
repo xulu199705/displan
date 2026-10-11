@@ -17,7 +17,10 @@ test("insecure HTTP supports all UUID creation paths and persistent layouts", as
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("http://displan.test:5173/");
+  await page.goto("http://displan.test:5173/displan/");
+  expect(await page.locator('link[rel="icon"]').getAttribute("href")).toBe(
+    "/displan/favicon.svg",
+  );
   expect(
     await page.evaluate(() => ({
       secure: window.isSecureContext,

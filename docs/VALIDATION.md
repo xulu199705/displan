@@ -74,3 +74,11 @@ HTTP 测试使用 `http://displan.test:5173/`，浏览器仅将测试域名解�
 首次构建发现测试引入了项目未配置的 Node 类型声明，已改用运行环境的 Web Crypto，最终构建通过。初轮浏览器回归出现一次既有吸附拖动测试未触发移动；文件编辑结束后完整重跑 10 项全部通过，未修改拖动逻辑或放宽断言。
 
 本次验证支持普通局域网 HTTP 的浏览器兼容性；未在 `192.168.30.141` 安装静态服务器或部署产物。该主机需提供 `dist/` 的 HTTP 静态服务才能通过端口 80 访问。
+
+## 子路径部署回归（2026-10-11）
+
+Vite base 改为 `/displan/`，浏览器测试同步使用该路径，HTTP 回归额外检查 favicon 前缀。`npm test` 为 58 / 58，`npm run build` 通过，`npm run test:e2e` 为 10 / 10。
+
+TNC30141 临时 Nginx 与临时 loopback DisPlan 服务预检通过：根地址入口页不跳转、两个应用前缀、DisPlan 全部资源字节、方案页 HTML / CSS、缺失资源和未知地址 404、禁止目录列表、仅两个指定入口追加尾斜杠。部署 Bash 语法、Python 3.9 语法和用户级 systemd unit 检查通过。
+
+正式部署需一次交互 sudo 执行 `install.sh`；实际三个服务的独立启停和最终路径访问结果以主机 `/home/xulu/Service/verification-subpaths.log` 为准，临时预检不等同于已完成正式 Nginx 切换。

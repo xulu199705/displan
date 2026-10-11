@@ -15,7 +15,7 @@ npm ci
 npm run dev
 ```
 
-打开终端显示的本地地址，默认为 `http://127.0.0.1:5173/`。
+打开终端显示的本地地址，默认为 `http://127.0.0.1:5173/displan/`。
 
 ```bash
 npm run typecheck    # TypeScript 检查
@@ -29,7 +29,9 @@ npm run test:e2e    # Playwright 浏览器测试
 
 构建后的 `dist/` 可部署到普通静态服务器。应用不访问产品图片、字体 CDN 或外部数据接口。首次安装依赖需要联网。
 
-支持通过局域网普通 HTTP 地址（如 `http://192.168.30.141/`）访问，需由服务器在对应地址和端口提供 `dist/` 静态文件。UUID 创建优先使用 `crypto.randomUUID()`；HTTP 非安全上下文下使用 `crypto.getRandomValues()` 生成同格式的 UUID v4，无需 HTTPS 才能创建方案、添加或复制显示器。浏览器须支持 Web Crypto。不同协议、主机或端口的 localStorage 相互独立，迁移已有方案请使用 JSON 导出 / 导入。
+部署路径为 `/displan/`，局域网访问地址为 `http://192.168.30.141/displan/`；构建产物中的资源路径均带此前缀。UUID 创建优先使用 `crypto.randomUUID()`；HTTP 非安全上下文下使用 `crypto.getRandomValues()` 生成同格式的 UUID v4，无需 HTTPS 才能创建方案、添加或复制显示器。浏览器须支持 Web Crypto。同一协议、主机和端口下迁移 URL 路径会保留现有 localStorage；不同协议、主机或端口的 localStorage 相互独立。
+
+TNC30141 的两个应用路径、独立启停脚本和 Nginx 部署步骤见 [部署说明](deploy/README.md)。
 
 ## 页面功能
 

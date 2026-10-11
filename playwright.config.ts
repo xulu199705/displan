@@ -6,7 +6,7 @@ export default defineConfig({
   workers: 1,
   timeout: 30000,
   use: {
-    baseURL: "http://127.0.0.1:5173",
+    baseURL: "http://127.0.0.1:5173/displan/",
     ...devices["Desktop Chrome"],
     viewport: { width: 1440, height: 1000 },
     trace: "retain-on-failure",
@@ -15,7 +15,7 @@ export default defineConfig({
   },
   webServer: {
     command: "npm run dev -- --port 5173 --strictPort",
-    url: "http://127.0.0.1:5173",
+    url: "http://127.0.0.1:5173/displan/",
     env: { __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: "displan.test" },
     reuseExistingServer: !process.env.CI,
     timeout: 30000,

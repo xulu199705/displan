@@ -34,7 +34,7 @@ async function examplePoint(page: Page, xMm: number, yMm: number) {
   };
 }
 test.beforeEach(async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await expect(page.getByTestId("layout-size")).toHaveText("1233.80 × 718.30");
 });
 test("example renders, bounds toggle retains stats, and view zoom does not alter world geometry", async ({
