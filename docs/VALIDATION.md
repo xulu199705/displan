@@ -84,3 +84,17 @@ TNC30141 临时 Nginx 与临时 loopback DisPlan 服务预检通过：根地址�
 正式部署需一次交互 sudo 执行 `install.sh`；实际三个服务的独立启停和最终路径访问结果以主机 `/home/xulu/Service/verification-subpaths.log` 为准，临时预检不等同于已完成正式 Nginx 切换。
 
 正式切换首轮发现 `systemctl reload` 返回后，验证请求仍可能由旧 worker 处理，未知路径短暂返回旧版 SPA 的 200。随后实际响应已为 404，两个新入口均为 200；验证脚本增加最多 8 秒的条件轮询，等待新路由生效后再执行原有严格断言。应用与 Nginx 的启动 / 重启脚本同步等待对应 HTTP 服务就绪。
+
+## TNC30141 正式部署实测（2026-10-11）
+
+已完成正式 Nginx 路径切换，服务器使用更新后的等待逻辑重新执行完整验证。读取 /home/xulu/Service/verification-subpaths.log，最终结果为 PASS: ALL subpath routing and independent control checks; all services running。
+
+- 根地址返回应用入口列表，HTTP 200，不自动跳转；未知路径返回 404。
+- /displan 与 /display_plan_note/U-3-A-343432 分别追加尾斜杠，HTTP 301；各自应用页面返回 200，缺失资源返回 404。
+- 两个应用各自停止时，其代理入口为 502，另一个应用为 200，Nginx 保持运行；启动后恢复 200；重启后 MainPID 改变；各自状态脚本正常。
+- Nginx 停止时 HTTP 不可达，两个应用进程仍为 active；启动及重启后两条应用路由恢复 200，Nginx MainPID 改变；状态脚本正常。
+- 实测结束后两个应用和 Nginx 均为 active / enabled。
+- 实际内网浏览器访问两个新路径：DisPlan 白板正常加载，添加、旋转、撤销及刷新恢复正常，已有自定义型号保留；方案页图片放大和关闭正常。此次访问的两个页面均无捕获到的 error / warn 控制台日志。
+- 源码修复提交 d1010894cb5a245babb04a3f7f8780bcba4912f6 的 [GitHub Actions](https://github.com/xulu199705/displan/actions/runs/38117578386) 已完成，结论为 success。
+
+Nginx 控制脚本位于 /home/xulu/Service/nginx-{start,stop,restart,status}.sh；两个应用目录各自提供 start.sh、stop.sh、restart.sh、status.sh。操作说明见 deploy/README.md。本次不扩大先前列出的浏览器与物理安装验证范围。
