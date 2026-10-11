@@ -15,8 +15,17 @@ assert_code() {
     actual="$(http_code "$1")"
     [[ "$actual" == "$2" ]] || { echo "FAIL: $1 expected $2 got $actual"; exit 1; }
 }
+wait_code() {
+    for attempt in {1..40}; do
+        [[ "$(http_code "$1")" == "$2" ]] && return
+        sleep 0.2
+    done
+    assert_code "$1" "$2"
+}
 displan=http://192.168.30.141/displan/
 note=http://192.168.30.141/display_plan_note/U-3-A-343432/
+# A successful systemctl reload can return before new Nginx workers serve it.
+wait_code http://192.168.30.141/unrelated-path 404
 assert_code http://192.168.30.141/ 200
 assert_code http://192.168.30.141/unrelated-path 404
 assert_code http://192.168.30.141/displan 301
@@ -59,8 +68,12 @@ assert_code http://192.168.30.141/ 000
 as_xulu systemctl --user is-active --quiet displan.service
 as_xulu systemctl --user is-active --quiet displaynote-u-3-a-343432.service
 /home/xulu/Service/nginx-start.sh
+wait_code "$displan" 200
+wait_code "$note" 200
 before="$(systemctl show nginx -p MainPID --value)"
 /home/xulu/Service/nginx-restart.sh
+wait_code "$displan" 200
+wait_code "$note" 200
 after="$(systemctl show nginx -p MainPID --value)"
 [[ "$before" != "$after" && "$after" != 0 ]]
 /home/xulu/Service/nginx-status.sh

@@ -82,3 +82,5 @@ Vite base 改为 `/displan/`，浏览器测试同步使用该路径，HTTP 回�
 TNC30141 临时 Nginx 与临时 loopback DisPlan 服务预检通过：根地址入口页不跳转、两个应用前缀、DisPlan 全部资源字节、方案页 HTML / CSS、缺失资源和未知地址 404、禁止目录列表、仅两个指定入口追加尾斜杠。部署 Bash 语法、Python 3.9 语法和用户级 systemd unit 检查通过。
 
 正式部署需一次交互 sudo 执行 `install.sh`；实际三个服务的独立启停和最终路径访问结果以主机 `/home/xulu/Service/verification-subpaths.log` 为准，临时预检不等同于已完成正式 Nginx 切换。
+
+正式切换首轮发现 `systemctl reload` 返回后，验证请求仍可能由旧 worker 处理，未知路径短暂返回旧版 SPA 的 200。随后实际响应已为 404，两个新入口均为 200；验证脚本增加最多 8 秒的条件轮询，等待新路由生效后再执行原有严格断言。应用与 Nginx 的启动 / 重启脚本同步等待对应 HTTP 服务就绪。
